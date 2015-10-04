@@ -1,0 +1,30 @@
+{
+  "StartState": "AlarmDisarmed_AllUnlocked",
+
+  "actions": {
+    "LOCK": {
+      "AlarmDisarmed_AllUnlocked"     :   "AlarmDisarmed_AllLocked",
+      "AlarmDisarmed_DriverUnlocked"  :   "AlarmDisarmed_AllLocked",
+      "AlarmDisarmed_AllLocked"       :   "AlarmDisarmed_AllLocked",
+      "AlarmArmed_AllLocked"          :   "AlarmArmed_AllLocked"
+    },
+    "LOCKx2": {
+      "AlarmDisarmed_AllUnlocked"     :   "AlarmArmed_AllLocked",
+      "AlarmDisarmed_DriverUnlocked"  :   "AlarmArmed_AllLocked",
+      "AlarmDisarmed_AllLocked"       :   "AlarmArmed_AllLocked",
+      "AlarmArmed_AllLocked"          :   "AlarmArmed_AllLocked"
+    },
+    "UNLOCK": {
+      "AlarmDisarmed_AllUnlocked"     :   "AlarmDisarmed_AllUnlocked",
+      "AlarmDisarmed_DriverUnlocked"  :   "AlarmDisarmed_DriverUnlocked",
+      "AlarmDisarmed_AllLocked"       :   "AlarmDisarmed_DriverUnlocked",
+      "AlarmArmed_AllLocked"          :   "AlarmDisarmed_DriverUnlocked"
+    },
+    "UNLOCKx2": {
+      "AlarmDisarmed_AllUnlocked"     :   "AlarmDisarmed_AllUnlocked",
+      "AlarmDisarmed_DriverUnlocked"  :   "AlarmDisarmed_DriverUnlocked",
+      "AlarmDisarmed_AllLocked"       :   "AlarmDisarmed_AllUnlocked",
+      "AlarmArmed_AllLocked"          :   "AlarmDisarmed_AllUnlocked"
+    }
+  }
+}

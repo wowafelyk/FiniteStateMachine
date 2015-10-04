@@ -1,17 +1,34 @@
 package com.example.fenix.finitestatemashine;
 
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-    String test = "test";
-    String test1 = "test1";
+import com.example.fenix.finitestatemashine.FSM.FSM;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+
+public class MainActivity extends AppCompatActivity implements FSM.StateChangeListener {
+
+    private ImageView mImageView;
+    private TextView mTextView;
+    private FSM mFiniteStateMachine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,34 +37,85 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mImageView = (ImageView)findViewById(R.id.imageView);
+        mTextView = (TextView)findViewById(R.id.textView);
+
+        JSONObject data = getJSONFile(R.raw.fsm_states);
+        try {
+            mFiniteStateMachine = new FSM(data);
+        }catch(JSONException e){
+            Toast.makeText(this,"Error in JSON file. Please check again",Toast.LENGTH_LONG).show();
+        }
+        mFiniteStateMachine.setStateChangeListener(this);
 
     }
 
+    /** Used for sending states from FSM to UI */
+    @SuppressWarnings("deprecation")
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void onStateChange(String state) {
+        mTextView.setText(state);
+        if(state.contains("AlarmDisarmed")){
+            mImageView.setBackgroundColor(getResources().getColor(R.color.colorGreen));
+        }else{
+            mImageView.setBackgroundColor(getResources().getColor(R.color.colorRed));
         }
 
-        return super.onOptionsItemSelected(item);
     }
-    enum STATES {
-        test,test1
+
+    public void onClickListener(View v){
+        switch (v.getId()) {
+            case R.id.button_lock:
+                if(!mFiniteStateMachine.addAction("LOCK")){
+                    Toast.makeText(this,"Error in JSON file. Please check again",Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.button_lockX2:
+                mFiniteStateMachine.addAction("LOCKx2");
+                break;
+            case R.id.button_unlock:
+                mFiniteStateMachine.addAction("UNLOCK");
+                break;
+            case R.id.button_unlockX2:
+                mFiniteStateMachine.addAction("UNLOCKx2");
+                break;
+        }
 
     }
+
+
+    /**
+     * Get JSONObject from raw package
+     */
+    private JSONObject getJSONFile(int id){
+        InputStream is = getResources().openRawResource(id);
+        Writer writer = new StringWriter();
+        int n;
+
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is));
+            while((n=reader.read(buffer)) !=-1){
+                writer.write(buffer,0,n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(writer.toString());
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
 
 
