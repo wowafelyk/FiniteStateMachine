@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FiniteStateMashine</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_label_lock">LOCK</string>
+    <string name="btn_label_unlock">UNLOCK</string>
+    <string name="btn_label_lockX2">LOCKx2</string>
+    <string name="btn_label_unlockX2">UNLOCKx2</string>
+</resources>
