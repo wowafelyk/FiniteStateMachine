@@ -4,6 +4,7 @@ import com.example.fenix.finitestatemashine.BuildConfig;
 import com.example.fenix.finitestatemashine.MainActivity;
 import com.example.fenix.finitestatemashine.R;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +22,8 @@ import static org.junit.Assert.*;
 public class FSMTest {
     MainActivity activity;
 
-    @BeforeClass
-    public void init(){
+    @Before
+    public void testStart()throws Exception{
         activity = Robolectric.setupActivity(MainActivity.class);
     }
 
@@ -32,9 +33,11 @@ public class FSMTest {
         FSM fsm = new FSM(activity.getJSONFile(R.raw.fsm_states),activity);
         assertTrue("Initial state error", fsm.getCurrentState().equals("AlarmDisarmed_AllUnlocked"));
         fsm.addAction("LOCK");
-        assertTrue("LOCK test error", fsm.getCurrentState().equals("AlarmDisarmed_AllUnlocked"));
+        assertTrue("LOCK test error", fsm.getCurrentState().equals("AlarmDisarmed_AllLocked"));
         fsm.addAction("LOCKx2");
         assertTrue("LOCKx2 test error", fsm.getCurrentState().equals("AlarmArmed_AllLocked"));
+        fsm.addAction("UNLOCKx2");
+        assertTrue("UNLOCKx2 test error", fsm.getCurrentState().equals("AlarmDisarmed_AllUnlocked"));
 
 
     }

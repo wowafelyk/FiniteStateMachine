@@ -5,15 +5,13 @@ import android.widget.TextView;
 import com.example.fenix.finitestatemashine.FSM.FSM;
 
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-
-import java.util.HashMap;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 public class MainActivityTest {
     MainActivity activity;
 
-    @BeforeClass
+    @Before
     public void init(){
         activity = Robolectric.setupActivity(MainActivity.class);
     }
@@ -36,7 +34,7 @@ public class MainActivityTest {
     @Test
     public void stateIsCorrect(){
         String text =(String)((TextView)activity.findViewById(R.id.textView)).getText();
-        assertTrue("Message", text.equals("AlarmDisarmed_AllUnlock"));
+        assertTrue("Message"+text, text.equals("AlarmDisarmed_AllUnlocked"));
     }
 
     @Test
