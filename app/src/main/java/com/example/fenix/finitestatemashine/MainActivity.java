@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,11 +39,7 @@ public class MainActivity extends AppCompatActivity implements FSM.StateChangeLi
         mTextView = (TextView)findViewById(R.id.textView);
 
         JSONObject data = getJSONFile(R.raw.fsm_states);
-        try {
-            mFiniteStateMachine = new FSM(data);
-        }catch(JSONException e){
-            Toast.makeText(this,"Error in JSON file. Please check again",Toast.LENGTH_LONG).show();
-        }
+        mFiniteStateMachine = new FSM(data,this);
         mFiniteStateMachine.setStateChangeListener(this);
 
     }
@@ -71,13 +65,19 @@ public class MainActivity extends AppCompatActivity implements FSM.StateChangeLi
                 }
                 break;
             case R.id.button_lockX2:
-                mFiniteStateMachine.addAction("LOCKx2");
+                if(!mFiniteStateMachine.addAction("LOCKx2")) {
+                    Toast.makeText(this, "Error in JSON file. Please check again", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.button_unlock:
-                mFiniteStateMachine.addAction("UNLOCK");
+                if(!mFiniteStateMachine.addAction("UNLOCK")){
+                    Toast.makeText(this, "Error in JSON file. Please check again", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.button_unlockX2:
-                mFiniteStateMachine.addAction("UNLOCKx2");
+                if(!mFiniteStateMachine.addAction("UNLOCKx2")){
+                    Toast.makeText(this, "Error in JSON file. Please check again", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements FSM.StateChangeLi
     /**
      * Get JSONObject from raw package
      */
-    private JSONObject getJSONFile(int id){
+    public JSONObject getJSONFile(int id){
         InputStream is = getResources().openRawResource(id);
         Writer writer = new StringWriter();
         int n;

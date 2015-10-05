@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FiniteStateMashine</string>
+    <string name="app_name">FiniteStateMachine</string>
     <string name="action_settings">About program</string>
     <string name="btn_label_lock">LOCK</string>
     <string name="btn_label_unlock">UNLOCK</string>

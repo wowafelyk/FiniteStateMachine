@@ -1,5 +1,8 @@
 package com.example.fenix.finitestatemashine.FSM;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,9 +23,14 @@ public class FSM {
      * @param config       JSON file for configuring FSM
      * @throws JSONException    Occurs when set JSON file with wrong data
      */
-    public FSM(JSONObject config)throws JSONException{
-        mCurrentState = config.getString("StartState");
-        mActions = config.getJSONObject("actions");
+    public FSM(JSONObject config,Context context){
+        try {
+            mCurrentState = config.getString("StartState");
+            mActions = config.getJSONObject("actions");
+        } catch (JSONException e) {
+            Toast.makeText(context, "Error in JSON file. Please check again", Toast.LENGTH_LONG).show();
+        e.printStackTrace();
+    }
     }
 
     /** Listener for send back current state after change */
@@ -46,7 +54,9 @@ public class FSM {
         }catch(JSONException e) {
             return false;
         }
-        mListener.onStateChange(mCurrentState);
+        if(mListener!=null){
+            mListener.onStateChange(mCurrentState);
+        }
         return true;
     }
 
