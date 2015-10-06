@@ -6,6 +6,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 /**
  * @autor Felyk Volodymyr
  * @since 04.10.2015.
@@ -14,8 +17,10 @@ import org.json.JSONObject;
 public class FSM {
 
     private String mCurrentState;
-    private String mPreviousState;
-    private JSONObject mActions;
+    private HashMap<String,HashMap<String,StateTransition>> mActions
+            = new HashMap<String,HashMap<String,StateTransition>>();
+    private HashMap<String,StateTransition> mStates
+            = new HashMap<String,StateTransition>();
     private StateChangeListener mListener;
 
     /** Creates Finite State Machine.
@@ -26,7 +31,20 @@ public class FSM {
     public FSM(JSONObject config,Context context){
         try {
             mCurrentState = config.getString("StartState");
-            mActions = config.getJSONObject("actions");
+            JSONObject jsonObjectAction = config.getJSONObject("actions");
+            Iterator<String> iter = jsonObjectAction.keys();
+            while(iter.hasNext()) {
+                String action = iter.next();
+                JSONObject obj = jsonObjectAction.getJSONObject(action);
+                Iterator<String> kIter = obj.keys();
+                mStates = new HashMap<String,StateTransition>();
+                while(kIter.hasNext()) {
+                    String state = kIter.next();
+                    String endState = obj.getString(state);
+                    mStates.put(state,new StateTransition(state,endState));
+                }
+                mActions.put(action,mStates);
+            }
         } catch (JSONException e) {
             Toast.makeText(context, "Error in JSON file. Please check again", Toast.LENGTH_LONG).show();
         e.printStackTrace();
@@ -48,12 +66,9 @@ public class FSM {
 
     /** Returns true if Action is done */
     public boolean addAction(String action){
-        mPreviousState = mCurrentState;
-        try {
-            mCurrentState = mActions.getJSONObject(action).getString(mPreviousState);
-        }catch(JSONException e) {
-            return false;
-        }
+
+        mCurrentState = mActions.get(action).get(mCurrentState).getEndState();
+
         if(mListener!=null){
             mListener.onStateChange(mCurrentState);
         }
